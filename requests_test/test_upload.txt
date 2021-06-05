@@ -1,1 +1,22 @@
-TEST_upload
+import requests
+
+class YaUploader:
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+
+    def upload(self):
+        PREPARE_UPLOAD_URL = "https://cloud-api.yandex.net/v1/disk/resources/upload"
+        params = {'path':'/test_upload.txt', 'overwrite': 'true'}
+        TOKEN = 'OAuth AQAAAAAFb6IVAADLW6pIWXkR-k0gsGDbokios1I'
+        headers = {'Accept': 'application/json', 'Authorization': TOKEN}
+
+        response = requests.get(PREPARE_UPLOAD_URL, params=params, headers=headers)
+        put_url = response.json().get('href')
+
+        files = {'file': open(self.file_path, 'rb')}
+        response = requests.put(put_url, files=files, headers=headers)
+        if response.status_code == 201: print('File successfully uploaded.')
+
+if __name__ == '__main__':
+    uploader = YaUploader('test_upload.txt')
+    result = uploader.upload()
